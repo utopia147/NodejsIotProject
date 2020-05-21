@@ -29,3 +29,6 @@ var logSchema = mongoose.Schema({
     statuslog: { type: String, required: true },
     datelog: { type: String, default: NOW() },
 })
+
+var logModel = mongoose.model('log', logSchema)
+module.exports = logModel
