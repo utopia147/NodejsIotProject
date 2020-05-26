@@ -4,6 +4,10 @@ const bodyParser = require("body-parser")
 const usersModel = require("./model/users")
 const nodeMcuModel = require("./model/nodemcu")
 const channelModel = require("./model/channel")
+const logModel = require("./model/log")
+const settimeModel = require("./model/settime")
+const itemModel = require("./model/item")
+
 const app = express()
 
 const port = 3000
@@ -16,18 +20,14 @@ app.get("/", (req, res) => {
 });
 
 app.post("/adduser", (req, res) => {
-  var username = req.body.username
-  var password = req.body.password
-  var firstname = req.body.firstname
-  var lastname = req.body.lastname
   usersModel.create(req.body, (err, doc) => {
     if (err) res.json({ failed: "Qurry failed" })
     res.json({
       suscess: "Qurry success",
-      username: username,
-      password: password,
-      firstname: firstname,
-      lastname: lastname,
+      username: req.body.username,
+      password: req.body.password,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
     })
   })
 })
@@ -48,7 +48,7 @@ app.get("/showuserall", (req, res) => {
 })
 app.post("/deleteuser", (req, res) => {
   const userid = req.body.id
-  usersModel.remove({ _id: userid }, (err, doc) => {
+  usersModel.findOneAndRemove({ _id: userid }, (err, doc) => {
     if (err) res.json({ qurry: "failed" })
     res.json({ status: "success qurry" })
   })
@@ -56,36 +56,54 @@ app.post("/deleteuser", (req, res) => {
 
 app.post("/updateuser", (req, res) => { })
 
+
+//nodeMcu
 app.post("/api/nodemcu/add", (req, res) => {
-  var nodemcuid = req.body.nodemcuid
-  var nodemcuStatus = req.body.nodemcuStatus
   nodeMcuModel.create(req.body, (err, doc) => {
     if (err) res.json({ failed: "Qurry failed" })
     res.json({
       suscess: "Qurry success",
-      nodemcuid: nodemcuid,
-      nodemcuStatus: nodemcuStatus,
+      nodemcuid: req.body.nodemcuid,
+      nodemcuStatus: nreq.body.nodemcuStatus,
     })
   })
 })
-
+//channel
 app.post("/channel/add", (req, res) => {
-  var channelid = req.body.channelid
-  var status = req.body.status
-  var channelstatus = req.body.channelstatus
-  var channelname = req.body.channelname
-
   channelModel.create(req.body, (err, doc) => {
-    if (err) res.json({ failed: "Qurry failed" })
+    if (err) res.json({ result: "Qurry failed" })
     res.json({
-      suscess: "Qurry success",
-      channelid: channelid,
-      status: status,
-      channelstatus: channelstatus,
-      channelname: channelname,
+      result: "Qurry success",
+      channelid: req.body.channelid,
+      status: req.body.status,
+      channelstatus: req.body.channelstatus,
+      channelname: req.body.channelname,
     })
   })
 })
+
+//settime
+app.post("/settime/add", (req, res) => {
+  settimeModel.create(req.body, (err, doc) => {
+    if (err) res.json({ result: "Qurry failed" })
+    res.json({
+      result: "Querry success",
+      channelid: req.body.channelid,
+    })
+  })
+})
+
+//item
+app.post('/item/add', (req, res) => {
+  itemModel.create(req.body, (err, doc) => {
+    if (err) res.json({ result: "Qurry failed" })
+    res.json({
+      result: "Querry success",
+      channelid: req.body.channelid,
+    })
+  })
+})
+//
 // app.put("/", (req, res) => {
 //   res.send("Status:" + res.statusCode + " Message: put ");
 // });

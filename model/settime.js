@@ -3,10 +3,10 @@ const mongoose = require('mongoose')
 
 var setTimeSchema = mongoose.Schema({
     channelid: { type: Number, required: true },
-    timeOn: { type: String, required: true },
-    timeOff: { type: String, required: true },
-    stateOn: { type: Boolean, required: true },
-    stateOff: { type: Boolean, required: true }
+    timeOn: { type: String, default: "00:00:00" },
+    timeOff: { type: String, default: "00:00:00" },
+    stateOn: { type: Boolean, default: true },
+    stateOff: { type: Boolean, default: true }
 })
 
 var setTimeModel = mongoose.model('settime', setTimeSchema)
