@@ -27,6 +27,12 @@ router.post("/:id", async (req, res) => {
         res.send(doc)
     })
 })
+router.put("/:id", async (req, res) => {
+    await nodemcuModel.findByIdAndUpdate(req.params.id, { $set: req.body }, (err, doc) => {
+        if (err) res.json({ querry: 'failed Update try again' })
+        res.send('Update success')
+    })
+})
 router.delete("/:id", async (req, res) => {
     const nodemcuid = req.params.id
     await nodemcuModel.findOneAndRemove({ nodemcuid: nodemcuid }, (err, doc) => {

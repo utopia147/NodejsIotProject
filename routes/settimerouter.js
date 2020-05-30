@@ -27,6 +27,12 @@ router.get('/:id', async (req, res) => {
         res.send(doc)
     })
 })
+router.put('/:id', async (req, res) => {
+    settimeModel.findByIdAndUpdate(req.params.id, req.body, (err, doc) => {
+        if (err) res.json({ querry: 'failed update try again' })
+        res.send('update success')
+    })
+})
 router.delete('/:id', async (req, res) => {
     var id = req.params.id
     await settimeModel.findByIdAndRemove({ _id: id }, (err, doc) => {

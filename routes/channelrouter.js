@@ -30,6 +30,12 @@ router.post("/:id", async (req, res) => {
         res.send(doc)
     })
 })
+router.put('/:id', async (req, res) => {
+    channelModel.findByIdAndUpdate(req.params.id, req.body, (err, doc) => {
+        if (err) res.json({ querry: 'failed update try again' })
+        res.send('update success')
+    })
+})
 router.delete("/:id", async (req, res) => {
     const channelid = req.params.id
     await channelModel.findOneAndRemove({ channelid: channelid }, (err, doc) => {
