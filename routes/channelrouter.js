@@ -2,15 +2,15 @@ const express = require('express')
 var router = express.Router()
 var channelModel = require('../model/channelmodel')
 
-router.get("/", (req, res) => {
-    channelModel.find((err, doc) => {
+router.get("/", async (req, res) => {
+    await channelModel.find((err, doc) => {
         if (err) res.json({ qurry: "failed qurry" })
         // res.json(doc.map(doc => doc.username))
         res.send(doc)
     })
 })
-router.post("/", (req, res) => {
-    channelModel.create(req.body, (err, doc) => {
+router.post("/", async (req, res) => {
+    await channelModel.create(req.body, (err, doc) => {
         if (err) res.json({ failed: "Qurry failed" })
         res.json({
             suscess: "Qurry success",
@@ -22,17 +22,17 @@ router.post("/", (req, res) => {
         })
     })
 })
-router.post("/:id", (req, res) => {
+router.post("/:id", async (req, res) => {
     const channelid = req.params.id
-    channelModel.find({ channelid: channelid }, (err, doc) => {
+    awaitchannelModel.find({ channelid: channelid }, (err, doc) => {
         if (err) res.json({ qurry: "failed qurry" })
         // res.json(doc.map(doc => doc.username))
         res.send(doc)
     })
 })
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
     const channelid = req.params.id
-    channelModel.findOneAndRemove({ channelid: channelid }, (err, doc) => {
+    await channelModel.findOneAndRemove({ channelid: channelid }, (err, doc) => {
         if (err) res.json({ qurry: "failed" })
         res.json({ status: "success qurry", msg: "deleted" })
     })

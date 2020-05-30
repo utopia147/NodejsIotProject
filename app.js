@@ -14,14 +14,6 @@ const port = 3000
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
-
-
-app.get("/", (req, res) => {
-  res.send("Status:" + res.statusCode + " Message: Get")
-});
-
-
-
 app.use('/api/users', usersRouter)
 app.use('/api/channel', channelRouter)
 app.use('/api/nodemcu', nodemcuRouter)
@@ -34,6 +26,10 @@ app.use((req, res, next) => {
   next(err);
 });
 
+
+app.get("/", (req, res) => {
+  res.send("Status:" + res.statusCode + " Message: NodeJS Running")
+});
 
 app.listen(port, () => {
   console.log("App running htpp://localhost:" + port)
