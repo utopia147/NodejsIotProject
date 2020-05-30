@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 var uri = 'mongodb://localhost:27017/iotproject'
 
 mongoose.connect(uri, { useNewUrlParser: true })
+mongoose.set('useCreateIndex', true);
 
 mongoose.connection.on('connected', () => {
     console.log('MongoDB Connected')

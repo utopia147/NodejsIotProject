@@ -21,7 +21,7 @@ router.post("/", (req, res) => {
         })
     })
 })
-router.post("/:id", (req, res) => {
+router.get("/:id", (req, res) => {
     const userid = req.params.id
     usersModel.find({ _id: userid }, (err, doc) => {
         if (err) res.json({ qurry: "failed qurry" })
