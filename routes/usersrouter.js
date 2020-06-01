@@ -38,33 +38,31 @@ router.post("/register", async (req, res) => {
     if (error.length > 0)
         res.json({ error: error, request: { email: email, username: username, password: password, firstname: firstname, lastname: lastname } })
     else
-        await bcrypt.genSalt(10, async (err, salt) => {
-            await bcrypt.hash(req.body.password, salt, async (err, hash) => {
-                if (err) throw err
-                req.body.password = hash
-                await usersModel(req.body).save((err, doc) => {
-                    if (err) res.json({ failed: "Qurry failed" })
-                    res.json({
-                        suscess: "Qurry success",
-                        email: req.body.email,
-                        username: req.body.username,
-                        password: req.body.password,
-                        firstname: req.body.firstname,
-                        lastname: req.body.lastname,
-                    })
-                })
-                // usersModel.create(req.body, (err, doc) => {
-                //     if (err) res.json({ failed: "Qurry failed" })
-                //     res.json({
-                //         suscess: "Qurry success",
-                //         username: req.body.username,
-                //         password: req.body.password,
-                //         firstname: req.body.firstname,
-                //         lastname: req.body.lastname,
-                //     })
-                // })
-            })
+
+        // await bcrypt.genSalt(10, async (err, salt) => {
+        //     await bcrypt.hash(req.body.password, salt, async (err, hash) => {
+        //         if (err) throw err
+        //         req.body.password = hash
+        //         await usersModel(req.body).save((err, doc) => {
+        //             if (err) res.json({ failed: "Qurry failed" })
+        //             res.json({
+        //                 suscess: "Qurry success",
+        //                 email: req.body.email,
+        //                 username: req.body.username,
+        //                 password: req.body.password,
+        //                 firstname: req.body.firstname,
+        //                 lastname: req.body.lastname,
+        //             })
+        // })
+        var saveUser = usersModel(req.body)
+    saveUser.save((err, doc) => {
+        if (err) res.json({ failed: "Qurry failed" })
+        res.json({
+            suscess: "Qurry success",
         })
+    })
+    //     })
+    // })
 
 })
 router.get("/:email", async (req, res) => {

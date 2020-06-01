@@ -18,17 +18,12 @@ module.exports = function (passport) {
             usernameField: 'email',
         }, async (email, password, done) => {
             await UserModel.findOne({ email: email }, (err, user) => {
-                if (!user)
-                    return done(null, false, { message: 'Incorrect email' })
-                if (err)
-                    console.log(err)
-                else
-                    bcrypt.compare(password, user.password, (err, isMatch) => {
-                        if (isMatch)
-                            return done(null, user, { message: 'Logged In Successful' })
-                        else
-                            return done(null, false, { message: 'Incorrect password' })
-                    })
+                bcrypt.compare(password, user.password, (err, isMatch) => {
+                    if (isMatch)
+                        return done(null, user, { message: 'Logged In Successful' })
+                    else
+                        return done(null, false, { message: 'Incorrect password' })
+                })
                 passport.serializeUser((user, done) => {
                     done(null, user.id);
                 })
@@ -47,16 +42,14 @@ module.exports = function (passport) {
             jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
             secretOrKey: jwtSecret.secret
         },
-            function (jwtPayload, done) {
-                console.log(jwtPayload)
+            async (jwtPayload, done) => {
+                //console.log(jwtPayload)
                 //find the user in db if needed
-                return UserModel.findById({ _id: jwtPayload })
-                    .then(user => {
-                        return done(null, user);
-                    })
-                    .catch(err => {
-                        return done(err);
-                    });
+                await UserModel.findById({ _id: jwtPayload }, (err, user) => {
+                    if (user) return done(null, user)
+                    if (err) return done(err)
+                })
+
             }
         ));
 }

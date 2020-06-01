@@ -42,9 +42,9 @@ router.post('/login', async (req, res, next) => {
     })(req, res, next)
 })
 /* POST login. */
-router.post('/loginjwt', function (req, res, next) {
+router.post('/loginjwt', async (req, res, next) => {
 
-    passport.authenticate('login', { session: false }, (err, user, info) => {
+    await passport.authenticate('login', { session: false }, (err, user, info) => {
         console.log(user);
         if (err || !user) {
             return res.status(400).json({
