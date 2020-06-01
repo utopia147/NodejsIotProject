@@ -1,14 +1,14 @@
 module.exports = {
-    ensureAuthenticated: (req, res, next) => {
-        if (req.isAuthenticated())
-            return next()
-
-        res.redirect('api/auth/login');
+    AuthenRequiredLogin: (req, res, next) => {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        res.redirect('/api/auth/register');
     },
-    forwardAuthenticated: (req, res, next) => {
-        if (!req.isAuthenticated())
-            return next()
-
-        res.redirect('api/auth/register')
+    AuthenticatedNoRequired: function (req, res, next) {
+        if (!req.isAuthenticated()) {
+            return next();
+        }
+        res.redirect('/api/auth/home');
     }
 }
