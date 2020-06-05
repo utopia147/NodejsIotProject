@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const channel = require('./channelmodel')
 function NOW() {
     var date = new Date();
     var aaaa = date.getFullYear();

@@ -18,16 +18,16 @@ module.exports = function (passport) {
             usernameField: 'email',
         }, async (email, password, done) => {
             await UserModel.findOne({ email: email }, (err, user) => {
-                bcrypt.compare(password, user.password, (err, isMatch) => {
-                    if (isMatch)
-                        return done(null, user, { message: 'Logged In Successful' })
-                    else
-                        return done(null, false, { message: 'Incorrect password' })
-                })
+                if (user)
+                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                        if (isMatch)
+                            return done(null, user, { message: 'Logged In Successful' })
+                        else
+                            return done(null, false, { message: 'Incorrect password' })
+                    })
                 passport.serializeUser((user, done) => {
                     done(null, user.id);
                 })
-
                 passport.deserializeUser((id, done) => {
                     UserModel.findById(id, (err, user) => {
                         done(err, user);
