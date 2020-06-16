@@ -1,15 +1,33 @@
 const express = require('express'),
     logModel = require('../model/logmodel'),
-    channelModel = require('../model/channelmodel')
-
+    channelModel = require('../model/channelmodel'),
+    userModel = require('../model/usersmodel')
 var router = express.Router()
+
 
 router.get('/', (req, res) => {
     logModel.find((err, doc) => {
-        if (err) res.json(err)
-        else
-            res.json(doc)
+        if (err) console.log(err)
+        else res.json(doc)
     })
+})
+
+router.post('/search', (req, res) => {
+    for (var i in req.body) {
+        req.body[i] = { $regex: req.body[i], $options: "i" }
+        console.log(req.body)
+    }
+    userModel.find(req.body, (err, user) => {
+        if (user == undefined)
+            return res.json({ status: '404', msg: 'cannot find userid' })
+        if (user)
+            logModel.find(req.body, (err, doc) => {
+                if (err) res.json(err)
+                else
+                    res.json({ User: user, Log: doc })
+            })
+    })
+
 })
 router.post('/', (req, res) => {
     channelModel.findOne({ channelid: req.body.channelid }, (err, doc) => {

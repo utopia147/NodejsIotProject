@@ -26,7 +26,7 @@ function NOW() {
 }
 var logSchema = mongoose.Schema({
     channelid: { type: Number, required: true },
-    userid: { type: Number, required: true },
+    userid: { type: String, required: true },
     statuslog: { type: String, required: true },
     datelog: { type: String, default: NOW() },
 })

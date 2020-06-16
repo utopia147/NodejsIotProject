@@ -12,10 +12,11 @@ var usersRouter = require('./routes/usersrouter'),
   settimeRouter = require('./routes/settimerouter'),
   authen = require('./routes/auth'),
   logRouter = require('./routes/logrouter')
-var { AuthenRequiredLogin } = require('./configs/auth')
 
+var { AuthenRequiredLogin } = require('./configs/auth')
 const app = express()
 const port = process.env.PORT || 3000
+
 //Passport Configs
 require('./configs/passport')(passport)
 var AuthenRequiredJwt = passport.authenticate('JWT', { session: false })
@@ -40,7 +41,7 @@ app.use('/api/channel', AuthenRequiredLogin, channelRouter)
 app.use('/api/nodemcu', AuthenRequiredLogin, nodemcuRouter)
 app.use('/api/item', AuthenRequiredLogin, itemRouter)
 app.use('/api/settime', AuthenRequiredLogin, settimeRouter)
-app.use('/api/log', logRouter)
+app.use('/api/log', AuthenRequiredLogin, logRouter)
 app.use('/api/auth', authen)
 
 
