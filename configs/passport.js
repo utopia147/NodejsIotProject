@@ -25,6 +25,8 @@ module.exports = function (passport) {
                         else
                             return done(null, false, { message: 'Incorrect password' })
                     })
+                else
+                    return done(null, false, { message: 'Email incorrect' })
                 passport.serializeUser((user, done) => {
                     done(null, user.id);
                 })

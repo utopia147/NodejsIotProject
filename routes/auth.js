@@ -8,11 +8,12 @@ var User = require('../model/usersmodel')
 //home
 router.get('/home', (req, res) => {
     res.json({
-        msg: 'Welcome',
+        status: 'Success',
         user: {
-            firstname: req.user.firstname,
-            lastname: req.user.lastname
-        }
+            userid: req.user._id,
+            email: req.user.email
+        },
+        msg: 'Login successfuly'
     })
 })
 router.get('/page1', (req, res) => {
@@ -25,7 +26,14 @@ router.get('/page1', (req, res) => {
     })
 })
 router.get('/faillogin', (req, res) => {
-    res.send('Inccorect email or password')
+    res.json({
+        status: 'Failed',
+        user: {
+            email: 'enter your email',
+            password: 'enter your password'
+        },
+        msg: 'Email or Password Incorrect'
+    })
 })
 router.get('/register', (req, res) => {
     res.send('register')
@@ -38,7 +46,7 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res, next) => {
     passport.authenticate('login', {
         successRedirect: '/api/auth/home',
-        failureRedirect: '/api/auth/faillogin',
+        failureRedirect: '/api/auth/faillogin'
     })(req, res, next)
 })
 /* POST login. */

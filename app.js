@@ -36,7 +36,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 //Routes
-app.use('/api/users', AuthenRequiredLogin, usersRouter)
+app.use('/api/users', usersRouter)
 app.use('/api/channel', AuthenRequiredLogin, channelRouter)
 app.use('/api/nodemcu', AuthenRequiredLogin, nodemcuRouter)
 app.use('/api/item', AuthenRequiredLogin, itemRouter)

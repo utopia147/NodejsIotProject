@@ -16,28 +16,35 @@ router.get("/", async (req, res, next) => {
 })
 router.post("/register", async (req, res) => {
     const { email, username, password, firstname, lastname } = req.body
+    console.log(email)
+    console.log(username)
+    console.log(password)
+    console.log(firstname)
+    console.log(lastname)
     var checkPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/
     let error = []
     //check req fields
-    if (!username || !password || !firstname || !lastname || !email)
-        error.push({ msg: 'Please enter all field' })
+    if (!username || !password || !firstname || !lastname || !email) {
+        error.push({ errorStatus: 1, msg: 'Please enter all field' })
+    }
     //check password lenght
-    if (!checkPass.test(password))
+    if (!checkPass.test(password)) {
         error.push({
+            errorStatus: 2,
             msg: {
-                characters: ['Password should have character and number',
-                    'Password should have at least 1 lowercase and uppercase']
-                ,
+                characters: 'Password should have character and number and password should have at least 1 lowercase and uppercase',
                 length: 'Password at least 6 characters and maximum 32',
                 example: 'Mypassword1234'
 
             }
         })
+    }
     //check characters
 
-    if (error.length > 0)
+    if (error.length >= 0) {
         res.json({ error: error, request: { email: email, username: username, password: password, firstname: firstname, lastname: lastname } })
-    else
+    }
+    else {
 
         // await bcrypt.genSalt(10, async (err, salt) => {
         //     await bcrypt.hash(req.body.password, salt, async (err, hash) => {
@@ -55,19 +62,19 @@ router.post("/register", async (req, res) => {
         //             })
         // })
         var saveUser = usersModel(req.body)
-    saveUser.save((err, doc) => {
-        if (err) res.json({ failed: "Qurry failed" })
-        res.json({
-            suscess: "Qurry success",
+        saveUser.save((err, doc) => {
+            if (err) res.json({ failed: "Qurry failed" })
+            res.json({
+                suscess: "Qurry success",
+            })
         })
-    })
-    //     })
-    // })
-
+        //     })
+        // })
+    }
 })
-router.get("/:email", async (req, res) => {
-    const email = req.params.email
-    await usersModel.findOne({ email: email }, (err, doc) => {
+router.get("/:id", async (req, res) => {
+    const id = req.params.id
+    await usersModel.findOne({ _id: id }, (err, doc) => {
         if (err) res.json({ qurry: "failed qurry" })
         // res.json(doc.map(doc => doc.username))
         res.send(doc)
