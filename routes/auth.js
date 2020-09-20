@@ -3,7 +3,25 @@ const router = express.Router()
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
 const jwtSecret = require('../configs/jwtConfig')
-var User = require('../model/usersmodel')
+var usersModel = require('../model/usersmodel')
+const multer = require('multer')
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/avatar');
+    },
+    filename: (req, file, cb) => {
+        cb(null, new Date().toISOString().replace(/:/g, '-') + file.originalname)
+    },
+})
+const fileFilter = (req, file, cb) => {
+
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true)
+    } else {
+        cb(null, false)
+    }
+}
+var upload = multer({ storage: storage, fileFilter: fileFilter })
 
 //home
 router.get('/home', (req, res) => {
@@ -75,6 +93,78 @@ router.post('/loginjwt', async (req, res, next) => {
 
 });
 
+router.post("/register", upload.single('avatar'), async (req, res) => {
+    const { email, username, password, firstname, lastname } = req.body
+    var avatar;
+    console.log(email)
+    console.log(username)
+    console.log(password)
+    console.log(firstname)
+    console.log(lastname)
+
+    var checkPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,32}$/
+    let error = []
+    //check req fields
+    if (!username || !password || !firstname || !lastname || !email) {
+        error.push({ errorStatus: 1, msg: 'Please enter all field' })
+    }
+    if (!req.file) {
+        const error = new Error('Please upload a file')
+        error.httpStatusCode = 400
+        console.log(error)
+        avatar = req.body.avatar
+    }
+    if (req.file) {
+        avatar = req.file.path.replace(/\\/g, '/')
+        console.log(avatar);
+
+    }
+    //check password lenght
+    if (!checkPass.test(password)) {
+        error.push({
+            errorStatus: 2,
+            msg: {
+                characters: 'Password should have character and number Password should have at least 1 lowercase and uppercase',
+                length: 'Password at least 6 characters and maximum 32',
+                example: 'Mypassword1234'
+
+            }
+        })
+    }
+    //check characters
+
+    if (error.length > 0) {
+        res.json({ response: error, request: { email: email, username: username, password: password, firstname: firstname, lastname: lastname, avatar: avatar } })
+    }
+    else {
+
+        // await bcrypt.genSalt(10, async (err, salt) => {
+        //     await bcrypt.hash(req.body.password, salt, async (err, hash) => {
+        //         if (err) throw err
+        //         req.body.password = hash
+        //         await usersModel(req.body).save((err, doc) => {
+        //             if (err) res.json({ failed: "Qurry failed" })
+        //             res.json({
+        //                 suscess: "Qurry success",
+        //                 email: req.body.email,
+        //                 username: req.body.username,
+        //                 password: req.body.password,
+        //                 firstname: req.body.firstname,
+        //                 lastname: req.body.lastname,
+        //             })
+        // })
+        // 
+        var saveUser = usersModel({ email: email, username: username, password: password, firstname: firstname, lastname: lastname, avatar: avatar })
+        saveUser.save((err, doc) => {
+            if (err) res.json({ response: [{ failed: "Qurry failed" }] })
+            res.json({
+                response: [{ suscess: "Qurry success", }]
+            })
+        })
+        //     })
+        // })
+    }
+})
 //Logout Handle
 router.get('/logout', (req, res) => {
     req.logout()

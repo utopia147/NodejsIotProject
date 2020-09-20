@@ -6,6 +6,7 @@ var usersSchema = mongoose.Schema({
     password: { type: String, required: true },
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
+    avatar: { type: String, required: false },
     __v: { type: Number, select: false }
 })
 usersSchema.pre('save', function (next) {

@@ -3,10 +3,12 @@ var router = express.Router()
 var nodemcuModel = require('../model/nodemcumodel')
 
 router.get("/", async (req, res) => {
-    awaitnodemcuModel.find((err, doc) => {
+    await nodemcuModel.find((err, doc) => {
         if (err) res.json({ qurry: "failed qurry" })
         // res.json(doc.map(doc => doc.username))
-        res.send(doc)
+        var DateCurrent = new Date().toUTCString();
+        console.log(DateCurrent);
+        res.json(doc)
     })
 })
 router.post("/", async (req, res) => {
@@ -28,7 +30,8 @@ router.post("/:id", async (req, res) => {
     })
 })
 router.put("/:id", async (req, res) => {
-    await nodemcuModel.findByIdAndUpdate(req.params.id, { $set: req.body }, (err, doc) => {
+    console.log(req.params.id);
+    await nodemcuModel.findOneAndUpdate({ nodemcuid: req.params.id }, { $set: req.body }, (err, doc) => {
         if (err) res.json({ querry: 'failed Update try again' })
         res.send('Update success')
     })

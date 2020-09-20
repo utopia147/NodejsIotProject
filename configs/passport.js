@@ -47,10 +47,12 @@ module.exports = function (passport) {
             async (jwtPayload, done) => {
                 //console.log(jwtPayload)
                 //find the user in db if needed
-                await UserModel.findById({ _id: jwtPayload }, (err, user) => {
-                    if (user) return done(null, user)
-                    if (err) return done(err)
-                })
+                await UserModel.find({ _id: jwtPayload }).select('-_id -password').
+                    exec((err, user) => {
+                        console.log(user)
+                        if (user) return done(null, user)
+                        if (err) return done(err)
+                    });
 
             }
         ));

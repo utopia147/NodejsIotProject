@@ -5,8 +5,9 @@ var channelModel = require('../model/channelmodel')
 router.get("/", async (req, res) => {
     await channelModel.find((err, doc) => {
         if (err) res.json({ qurry: "failed qurry" })
-        // res.json(doc.map(doc => doc.username))
-        res.send(doc)
+        // var data = [];
+        // data.push(doc)
+        res.json(doc)
     })
 })
 router.post("/", async (req, res) => {

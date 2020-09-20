@@ -3,7 +3,9 @@ const express = require("express"),
   dbconnect = require("./model/db"),
   bodyParser = require("body-parser"),
   session = require('express-session'),
-  passport = require('passport')
+  passport = require('passport'),
+  multer = require('multer')
+
 //Routes require
 var usersRouter = require('./routes/usersrouter'),
   channelRouter = require('./routes/channelrouter'),
@@ -16,11 +18,13 @@ var usersRouter = require('./routes/usersrouter'),
 var { AuthenRequiredLogin } = require('./configs/auth')
 const app = express()
 const port = process.env.PORT || 3000
+var upload = multer({ dest: 'uploads/avatar' })
 
 //Passport Configs
 require('./configs/passport')(passport)
 var AuthenRequiredJwt = passport.authenticate('JWT', { session: false })
 
+app.use('/uploads', express.static('uploads'))
 //Bodyparser
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,12 +40,12 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 //Routes
-app.use('/api/users', usersRouter)
-app.use('/api/channel', AuthenRequiredLogin, channelRouter)
-app.use('/api/nodemcu', AuthenRequiredLogin, nodemcuRouter)
-app.use('/api/item', AuthenRequiredLogin, itemRouter)
-app.use('/api/settime', AuthenRequiredLogin, settimeRouter)
-app.use('/api/log', AuthenRequiredLogin, logRouter)
+app.use('/api/users', AuthenRequiredJwt, usersRouter)
+app.use('/api/channel', AuthenRequiredJwt, channelRouter)
+app.use('/api/nodemcu', AuthenRequiredJwt, nodemcuRouter)
+app.use('/api/item', AuthenRequiredJwt, itemRouter)
+app.use('/api/settime', AuthenRequiredJwt, settimeRouter)
+app.use('/api/log', AuthenRequiredJwt, logRouter)
 app.use('/api/auth', authen)
 
 
